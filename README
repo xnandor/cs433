@@ -1,0 +1,15 @@
+UAB's CS433 - Operating Systems (Computer Science)
+
+Internal design and operation of a modern operating system, 
+including interrupt handling, 
+process scheduling, 
+memory management, 
+virtual memory, 
+demand paging, 
+file space allocation, 
+file and directory management, 
+file/user security and file access methods.
+
+This repository includes notes from the class as well as my work on the final project.
+
+

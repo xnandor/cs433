@@ -1,0 +1,1020 @@
+\documentclass{article}
+
+\begin{document}
+
+\section*{Introduction}
+
+We can record anything we want instead of going to class.
+
+The only mandatory classes are the exam days. 
+
+The first person to ask a question about the final project before memory management will receive a zero.
+
+The final project is going to be 25 precent of your grade. 
+
+First Third
+Interrupts and processes.
+
+Second Third
+Paging and memory management.
+90-10 rule: 90 percent of the time only 10 precent of programs code is being executed.
+
+Third Third
+Filesystem
+
+When Hyatt started all file systems were flat. 
+
+Interrupt: An interrupt is an external asynchronous event. (outside the CPU.) (Un-clocked.)
+
+I/O Interrupt: 
+
+Timer: Gives control for a set amount of time. 
+
+Unfortunately intel has an int instruction for interrupt. This is not the same as an interrupt. 
+
+When the doorbell rings, you stop to remember what you were doing. Then answer the door... when your finished recall what you were doing and finish it. 
+
+When handling an interrupt save all the registers.
+
+Hardclock: Every 100 times a second check time and update clock.
+
+\subsection*{Homework}
+
+Read Chapter 1-2.
+
+\section*{Class 2}
+
+\subsection*{Interrupts}
+
+Classes of Interrupts
+\begin{itemize}
+\item Program
+\item Timer
+\item I/O
+\item Hardware failure
+\end{itemize}
+
+Most of our time will be spent on the middle two. 
+
+
+An asynchronous way of i/o uses:
+Input/Output Request Handler
+Input/Output Interrupt Handler
+
+The Interrupt Vector is a list of 64 instruction pointers. 
+
+RETI - Return from Interrupt.
+
+{\bf Sequential Interrupts}
+The standard PC way to handle multiple interrupts at the same time is to disable interrupts momentarily. 
+Then when it is finished it enables interrupts and the next interrupt is processed. 
+
+{\bf Nested Interrupt Processing}
+This is when an interrupt immediately enables interrupts to nest them. 
+Nested interrupts normally use priority to figure out which task is most important. 
+
+The goal of timer and I/O interrupts is to execute programs concurrently. 
+
+
+There are three techniques for I/O operations:
+\begin{itemize}
+\item Programmed I/O
+\item Interrupt-driven I/O
+\item Direct Memory Access (DMA)
+\end{itemize}
+
+{\bf DMA}
+Goto this cylinder, head, and block and let the drive get all the data and interrupt when it's ready. 
+
+\subsection*{Operating System}
+
+Over the years many standards have filtered down to two. Unix and Windows.
+
+Layers and Views
+\begin{itemize}
+\item Application Programs (End User)
+\item Utilities (Programmer)
+\item Operating System (Programmer)
+\item Computer Hardware (Operating System Designer
+\end{itemize}
+
+Evolution of Operating Systems
+\begin{itemize}
+\item Serial Processing
+\item Simple Batch Systems
+\item Multiprogrammed Batch Systems
+\item Time Sharing Systems (First Terminal)
+\end{itemize}
+
+Any instruction that can influence the process that is running is called privileged instructions.
+
+User Mode vs Kernel Mode.
+
+Kernel Mode has privileged instructions.
+
+{\bf Major Advances}
+
+Operating Systems are among the most complex pieces of software ever developed. 
+
+Major advances include:
+\begin{itemize}
+\item Processes
+\item Memory management
+\item Information protection and security
+\item Scheduling and resource management
+\item System
+\end{itemize}
+
+One of the most common error in operating systems is timing. 
+
+Xs
+
+\section*{Class 3}
+
+In the case of a disk drive you have to write an entire sector at a time.
+You cant read or write just one byte. 
+
+(Check picture on phone...graph with three nodes)
+
+Request Handler (User Mode) (From Run to blocked)
+  to Validate  (Now in Kernel Mode
+  to Queue 
+  to $|Q|==1$
+    to (yes) start to block
+    to (no) block
+
+Interrupt Handler
+  to DeQueue
+  to $|Q|==null$
+    to (yes) unblock
+    to (no) start
+
+Scheduler
+  takes Run to Ready 
+  and Ready to Run
+
+A process is in either Run, Blocked or Ready. 
+
+We are gonna have three queues
+1. one with processes that are ready.
+2. one with blocked processes.
+3. one for running processes.
+
+Interrupt Id is a number between 1-63. Looks for an interrupt vector. 
+
+ProcSturcture - ``Process control block'', task block. Each vendor is different. They are each organized different per vendor. 
+
+Mac is based on the BSD structure. 
+
+``Unix does the fairness thing well...other operating systems do a crappy job at it.''
+
+Everyone in blocked must have an interrupt. 
+A blocked process is doing I/O.
+
+APIC - Advanced Programmable Interrupt Control.
+
+Keep I/O devices busy. 
+Keep processor busy. 
+Be fair.
+
+
+Useful things to look for:
+schd.c
+grep -i molnar (mingo)
+linux o(1) scheduler
+
+Eric: ``I Missed the beginning of class...and don't remember from the book? Where does the request handler come in?''
+Brandon: ``From run to start''
+
+When it comes to reading data on the disk...fairness (FIFO) and efficiency are opposed to each other. 
+
+Elevator Algorithm. Reads the Disk Like an elevator traverses a building. 
+
+The more people you have using the disk drives the more efficient it becomes. 
+
+You can set a counter to read backwards n times. This is a heuristic to elevator. 
+
+\section*{Class 4}
+
+I/O Queue (The fairness count algorithm) (Hyatts Invention)
+
+Elevator with fairness for I/O
+
+Set a counter to n and when it reaches zero you must do elevator. 
+Each time a location is read and turned away from you decrement the fairness counter. 
+Worst case its elevator best case it's optimal. 
+
+SCSI vs SATA/IDE
+
+The I/O Queue is shared by the request handler and the interrupt handler. 
+
+Hardware calls an interrupt.
+Request handler is called from x software. 
+
+Each Device needs a interrupt number so that interrupts can be efficient.
+
+Without the IRQ (interrupt request number) software must check every device to see it made the interrupt. 
+
+\subsection*{Threaded List}
+
+A linked list with subsets. 
+
+\subsection*{}
+
+The most I/O bound process must have the highest priority. 
+
+Let,
+$$
+P_0
+P_1
+P_2
+P_3
+$$
+be processes. 
+
+{\bf Thrashing}
+
+Thrashing is when the timer gets down so low that all the time is spent multi-task switching.
+
+Thrashing happens between cpu processing and I/O. 
+
+Chapter 9. 
+
+{\bf Response Time}
+
+Measure of how quickly the cpu responds. 
+
+{\bf Throughput}
+
+Throughput depends on the machine and purpose. 
+
+\subsection*{Scheduling}
+
+The scheduling function should...
+\begin{description}
+\item Share time fairly among processes
+\item Prevent starvation of a process
+\item Use the processor efficiently
+\item Have low overhead
+\item Prioritize processes when necessary (95 precent toward user processes)
+\end{description}
+
+{\bf Three types of process scheduling.}
+
+\begin{description}
+\item Long-term scheduling (The decision to add to the pool of processes to be executed) (Wait in line ie LOL)
+\item Medium-term scheduling (The decision to add to the number of processes that are partially or fully in the main memory)
+\item Short-term scheduling (The decision as to which available process will be executed by the processos) ({\bf Known as Dispatcher})
+\item I/O scheduling (The decision as to which process's pending I/O request shall be handled by an available I/O device.)
+\end{description}
+
+A dead lock is when everyone is blocked because they are waiting for someone else to finish. 
+
+Long term makes the decisions that short term has to live with. 
+
+\subsection{Class 5}
+
+You must favor I/O bound processes over CPU bound processes. 
+
+Uniprocessor Scheduling.
+
+Scheduling Objectives
+\begin{itemize}
+\item Share Time fairly among processes
+\item Prevent starvation of a process
+\item Use the processor efficiently
+\item Have low overhead
+\item Prioritize processes when necessary
+\end{itemize}
+
+Deadlock is when two processes are waiting on each other.
+Live-lock is optimal strategy. 
+
+We always have to keep someone in run.
+
+\begin{itemize}
+\item Long-term
+Wether we let a process into the system or not.
+\item Medium-term
+If we screwed up in long term than we will need to suspend a process.
+\item Short-term (Dispatcher)
+Which process runs next.
+\end{itemize}
+
+\subsection{Interdependent Scheduling Criteria}
+
+{\bf Turnaround Time} This is the interval of time between the submission of a process and its completion.
+Includes actual execution time plus time spent waiting for resources, including the processor.
+This is an appropriate measure for a batch job.
+
+{\bf Response time} For an interactive process, this is the time from the submission of a request until the response begins to be received.
+Often a process can begin producing some output to the user while continuing to process the request. 
+This, this is a better measure than turnaround time from the user's point of view.
+The scheduling discipline should attempt to achieve low response time and to maximize the number of interactive users receiving acceptable response time
+
+{\bf Deadlines} When process completion deadlines can be specified, the scheduling discipline should subordinate other goals to that of maximizing the percentage of deadlines met.
+
+{\bf Predictability} 
+
+{\bf Throughput} 
+
+{\bf Processor utilization}
+
+{\bf Fairness}
+
+{\bf Enforcing priorities} 
+
+{\bf Balancing resources}
+
+\subsection{Priorities}
+
+Should go from 0 to n. 0 is the highest priority.
+
+Have multiple ready queues to represent priority. 
+
+Starvation is when a low priority process may suffer starvation if there is a steady supply of high priority processes.
+
+The solution is to allow a process to change its priority based on its age or execution history. 
+
+Alternative Scheduling Policies: (Diagram on power point.)
+
+{\bf Quantum} - Time slice for process execution
+
+\begin{itemize}
+\item First Come First Serve
+\item Round Robin - Spurty but fair (Can be expanded to a virtual round robin by adding a block and HP ready(High Priority)) - Bad for throughput.
+\item SPN
+\item SRT
+\item HRRN
+\item Feedback - many ready queues based on execution quantum. This helps manage I/O bound vs Compute bound processes. 
+We want do go down like a rock but up like a bubble.
+\end{itemize}
+
+The linux term is a multi-level feedback queue. 
+When a new process comes in it is best to set it in the middle queue on a multi-level feedback queue. 
+
+Super computers schedule with large quantums. 
+
+\section{Class 6 - Linux Processes}
+
+
+
+Once a second it must check each ready queue to re-prioritize
+
+{\bf process priority aging} re-averages each processes priority.
+
+Most people like measuring computation time as opposed to I/O time for determining priority.
+If you measure I/O time there are many other factors to consider such as system wait time.
+
+\subsection*{O(1) scheduler -Ingo}
+{\bf An Epoch is when all processes have expired or run out of time}
+The only way you can get to expire is when your quantum goes to zero.
+
+Advantage being that you don't have to scan through the processes and balance them. 
+
+Fairness is opposed to Efficiency.
+Fairness is orthogonal to all other goals.
+
+use ``nice'' and ``renice'' in linux to change priority.
+
+Paging is considered I/O: ``vmstat'' on linux.
+
+\section{Class 7 - }
+
+nice changes the quantum.
+
+linux computes the quantum based on priority.
+
+Each process gets evaluated when it burns its quantum or there is an epoch.
+
+The floor for a quantum is around 80 ms.
+
+The time to switch context is a significant overhead. 
+
+\subsection{Test}
+
+Processes and I/O
+
+Next Tuesday is the test day.
+
+Fair and I/O are Orthogonal to each other.
+
+Darwin currently claims to implement a similar scheduler as linux.
+
+Round Robin
+Virtual Round Robin
+Queue
+O(1)
+Completely Fair.
+
+Epoch
+
+Chapters 1, 2, 3, 9 and 11 (Just what we covered in class)
+
+Linux puts every process on the bottom and lets them go to the top when they do I/O.
+Feedback is the opposite. (This requires an aging mechanism.) (The bottom of the tank could be a no contact rule.)
+
+
+Queue (It is not a queue in the since of data structures...but it is like a room which people are queued.)
+High Priority (in unix the priority is high when number is low. Other machines treat is differently.)
+
+Linux uses 0-20 for priority which is 21 numbers...with nice 41
+
+Process Scheduler models are either accurate or fast. 
+
+Throughput is better in the O(1)
+
+A user has a user id. Every file has an owner. 
+
+FIFO is fair for disk I/O
+Elevator is for those that consider FIFO not fast enough. (Elevator is efficient and commonly used.)
+  Tag Queuing
+Fairness Count uses n as a parameter between FIFO and ELEVATOR.
+
+Cylinder Head and Sector
+the magnetic spots are nanometers apart.
+Compensation zones are adjusted on a disk cylinder to allow for more magnetic zones on a disk.
+
+Short term is what the scheduler does.
+Medium term is making up for long terms mistakes. 
+Long term is what we let in.
+
+Throughput should not count OS processes
+
+\subsection*{Mnemonics For Test}
+
+HARDWARE FOR HARDWARE
+Syn-Wait-Ack-Stack-Attack
+SOFTWARE FOR INTERRUPT
+
+\section*{Day After the Storm (Test)}
+
+take grad and multiply by 2.5.
+
+I made a 73
+
+
+\section*{Memory Management}
+
+Memory Partitioning was the first way of doing memory management.
+
+DRAM price has dropped dramatically.
+
+Hyatt wrote demand paging for a xerox operating system.
+
+Honeywell bought xerox.
+
+Memory management techniques are sometimes obsolete because the price of memory.
+
+Boyles law from chemistry. gas will expand to fill space
+Memory will expand to fill the space available. 
+
+The disk is still the cheapest storage we have.
+
+Disk is permanent main memory is temporary. 
+
+Memory I/O (disk) is slow compared to CPU.
+
+Memory is just a sequential list of addresses.
+
+Memory management must be done in a clever way to get as many programs in memory at a time as possible. 
+
+{\bf Memory management requirements}
+
+\begin{itemize}
+\item Relocation
+\item Protection
+\item Sharing
+\item Logical Organisation
+\item Physical organisation
+\end{itemize}
+
+{\bf Relocation}
+
+The programmer doesn't know where the program is gonna be in memory.
+
+intel calls
+
+Frame - 4k bytes of unwritten memory.
+Page - 4k bytes of assigned memory.
+
+Process Control Block = Registers Store
+
+Memory is generally organized linearly.
+
+Programs are written in modules. sometimes called procedures. 
+
+Cannot leave the programmer with the responsibility to manage memory. 
+
+{\bf Partitioning}
+
+An early method of managing memory.
+
+Anything that can be done dynamically should be done dynamically.
+Do things as late as possible. 
+
+\begin{itemize}
+\item Fixed Partitioning
+\item Dynamic Partitioning.
+\item Simple Paging
+\item Simple Segmentation
+\item Virtual Memory Paging
+\item Virtual Memory Segmentation
+\end{itemize}
+
+Partitions create fragmentation problems
+
+{\bf Fragmentation} - is the sum total of all the memory that is currently not in use.
+
+There is normally an operating system partition.
+
+The number of active processes is limited by the system.
+
+A large number of small jobs waste space. and limits number.
+
+{\bf Dynamic Partitioning}
+
+Has external Fragmentation.
+
+Memory external to all processes is fragmented.
+
+{\bf Contiguous Memory} - When we assume memory is from memory[0] to memory[n-1]
+
+We could use the buddy system. Which breaks the memory into halves when partitioning.
+
+It also joins two spaces when they are free.
+
+The buddy system is just a binary tree algorithm.
+
+next slide is 31.
+
+\section*{Memory}
+
+\subsection*{Simple relocation Model}
+
+The operating system has exclusive access to two additional registers.
+
+{\bf The base register -} The base register is added to everything at run time.
+
+{\bf the bounds register -} If an address is higher than the bounds access will be denied.
+
+If a physical address is in between the base and bounds register you are allowed to access.
+
+``YOU Cannot use physical addresses in user mode.''
+
+In kernel mode you can turn mapping (relocation) off.
+
+Relocation solves fragmentation...but inefficiently. 
+
+\subsection*{Paging}
+
+A page is a small equal fixed-size chunks and divide each process into the same size chunks.
+
+The operating system maintains a page table for each process...AKA memory map.
+
+{\bf Page table}
+
+Maps:
+$$
+f(\textrm{virtual address}) = R\textrm{eal address}
+$$
+
+This all happens in the hardware automagicly.
+
+Map size is:
+$$
+\textrm{Map Size} = \frac{\textrm{Total Memory}}{\textrm{Frame Size}}
+$$
+
+The map is changed for each process. The mapping must be elsewhere in memory when not in use.
+
+Lookup virtual address size?
+
+Linux
+\textrm{more /procs/meminfo}
+\textrm{more /procs/cpuinfo}
+
+All this is under the category of MMU (Memory Management Unit).
+
+The valid bit tells me wether I can jump one page table deeper.
+
+The page tables are stored in main memory.
+
+The (TLB - Translation Lookaside Buffer) is stored in a special hardware cache.
+
+When using a 32-bit architecture the page tables go one deep.
+
+When using a 64-bit architecture the page tables go three deep.
+
+Each table has a set of reference bits, page bits, and one valid bit.
+
+The hierarchy of tables in the page table is always called something else depending on vendor.
+
+This started with the IBS 370 (circa 1972).
+
+\section{Virtual Memory Continued}
+
+The map has several extra bits.
+\begin{itemize}
+\item Valid Bit (Sometimes uses presence bit) - 
+  If 0 then don't continue down the tree.
+  A page fault is when the valid bit is 0.
+  For now...a page fault is the same as segmentation fault.
+\item Reference Bit -
+  Every time the hardware does a translation with input to output...the reference bit is set to 1.
+  It is 0 by default.
+\item Modified Bit -
+  Changes to 1 if page has been modified. 
+\end{itemize}
+
+The modified, valid and reference bits are independent of each other.
+
+Then there are 3 permission bits.
+
+\begin{itemize}
+\item Read Bit - 
+\item Write Bit - 
+\item Execute - 
+\end{itemize}
+
+Each page should have either data or programs.
+
+This (Permission Bits) has nothing todo with protecting people from each other.
+It is all about protecting you from yourself.
+
+Virtual Memory and Demand paging are almost the same.
+
+With demand paging...I'm only bringing in what is necessary.
+
+With virtual memory...the memory is not real and can be whatever.
+
+There is exactly one memory address 0.
+
+There may be many virtual addresses. 
+
+90 10 rule:
+10 percent of code is being executed 90 percent of the time and visa versa.
+
+Resident Set - Portion of process that is in main memory.
+Working Set - Portion of process that is needed in main memory.
+
+When you try to access an address that is not in main memory...
+the OS puts process in a blocking state...does i/o for you...
+and creates pages...
+and turns on valid bit.
+
+Demand paging is when the OS creates pages when they are accessed.
+
+Some page faults are ok and lead to demand paging and other are bad and lead to bigger errors.
+
+This new approach leads to new processes.
+
+------------------------------------------------
+
+There are two types of locality.
+Temporal and Spacial.
+
+We try to make memory both specially and temporally local.
+
+You can read in too much...you can read in too little.
+
+To make virtual memory work we have got to have the right hardware.
+
+Hardware must support paging and segmentation.
+
+Each process has its own page table.
+
+\section*{Paging}
+
+The smaller the page size...the less waste.
+The larger the page size...the more likely you wont need it all.
+
+4kb has become the standard page size over the years.
+
+The larger the page the less entries we need in a page table.
+
+Smaller map is good.
+
+{\bf Key design Elements - Operating System Policies for Virtual Memory}
+
+\begin{itemize}
+\item Fetch Policy
+\item Placement Policy
+\item Replacement Policy - 
+  Basic Algorithms:
+  \begin{itemize}
+  \item Optimal (Cannot be implemented) (best)
+  \item Least recently used (LRU) (good)
+  \item First-in-first-out (just ok)
+  \item Clock 
+  \end{itemize}
+\item Resident Set Management
+\item Cleaning Policy
+\item Load Control
+\end{itemize}
+
+The primary aim is to minimise page faults.
+
+Demand paging is when a piece of memory is only brought in when it is referenced.
+
+{\bf Frame Locking}
+
+If a frame is locked it cannot be replaced.
+
+This is only important because I/O can use real addresses.
+
+Associate a lock bit with each frame.
+
+\subsection*{Basic Replacement Algorithms}
+
+Are we gonna do a local or global page replacement policy?
+
+Local means that the page to be replaced must be from the same process.
+
+With Global...everybody's pages are threatened.
+
+...we will use the reference bit to determine who can be kicked.
+
+We set a limit on how many free pages we must have before we replace. (Called threshold)
+
+When we don't have enough free pages. 
+We are going to cycle around all pages and set their reference bit to zero;
+see if they run (change ref bit); if the ref bit is zero we kick out the page.
+
+This is a global page replacement trick.
+
+There are two types of page faults in this senario: expensive and cheap.
+An expensive page fault is when we have to get the page from disk.
+A cheap one is pulled back in from ram.
+
+This is why it's called the second chance algorithm.
+
+There is also a modified list to handle pages that have been written in ram but not disk.
+
+Unix calls a cheap page fault a reclaimed page.
+
+When the free pages drop below the first threshold the paging demon turns on.
+
+When the free pages drop below the second threshold the paging demon turns on and works faster.
+
+The free list is organized first in first out.
+
+Lookup threaded linked list.
+
+When The free list gets emptied .
+
+Least Recently Used Approximation is the giant colored-clock craziness he wrote on the board.
+It is a global replacement strategy.
+
+If all but one ref bit is set while sweeping (see picture) than it is Not an approx;
+it would be true LRU.
+
+The paging demon handles everything 
+
+pagndmn
+
+gas
+nasm -f macho
+along32 (kip/irvine)
+
+\section*{Global Paging Daemon Continued}
+
+The free list contains pages that are not marked valid in anyones resident set.
+The modified list contains pages that are not marked valid in anyones resident set and has modified bit set.
+
+A resident set is the set of pages that have their valid bit set to one.
+
+\subsection*{Local paging Daemon}
+
+For local resident sets we swap out the colored clock with one resident set.
+
+When the local paging set needs another page it must take it from free or modified.
+
+Each process has a number for their resident set size.
+
+Once the resident set is full and the set need more memory, we send one page to free and pull in one more.
+
+``If you like a name for this,  2xfif0'' -Hyatt
+
+We need to know a page fault rate/sec for each process.
+
+The ideal page fault rate is 1. Not 0.
+
+There are three cases
+
+\begin{itemize}
+\item wss > rss
+\item wss = rss
+\item wss < rss
+\end{itemize}
+
+(wss = working set size)
+(rss = resident set size)
+(pfr = page fault rate)
+
+
+Which is worse, paging rate is too high or too low? High, too much i/o.
+Low paging rate (0), to much memory is used.
+
+The optimal paging rate is one above zero. Zero is bad why?
+
+We are giving pages liberally and taking conservatively.
+
+If a page rate is too high, we suspend his process and write his resident set to memory.
+
+Page fault mean I/O.
+
+If you reclaim a modified page we get a double win.
+
+The advantage of the unix(local) paging algorithm is that it works better for a mix of programs.
+The global and local paging algorithms are the same for a single process.
+(THESE ARE LRUAs not LRUs. LRUs are practically impossible.)
+
+Global is all about the size of the free list.
+
+The local is all about wss rss and pfr.
+
+Microsoft has never addressed a high page fault rate. (Thrashing)
+
+A worst case replacement strategy is random. (or MRU)
+
+\section*{Permissions}
+
+The only reasonable permissions are r, rw, and x.
+
+If rw for a page. It cannot be shared since one user could overwrite memory.
+
+Pages that are altered can be duplicated to share. Pages that cannot be written can be shared across all processes.
+
+The permissions are on a per file basis.
+
+The inode number changes when you modify a file.
+
+Everybody has to have printf, open, malloc and such.
+
+We don't remove a shared library from anyones resident set.
+
+``In unix there is no working set.'' -Hyatt
+
+Whaaa.
+
+We must block whenever a process reads or writes to disk.
+
+Unless we create a new page aliased as the old buffer.
+
+This is called double buffering. (For unblocked writes.)
+
+Prefetching is done for unblocked reads.
+
+When we want random I/O, we just turn off prefetching.
+
+Block-list-write.
+
+File-system-cache.
+
+\subsection*{Spawning Child Processes}
+
+When a ``fork'' is done, instead of duplicating rw pages, we set all rw permissions to r.
+
+This way no copy is done.
+
+Once a write is then attempted by a forked process, a copy of the page is made to change r to rw for both pages.
+
+This is called copy-on-write.
+
+There are all sorts of extra bells and whistles created to deal with multiple processes.
+
+Two processes forked have the same have the same starting set of pages but diverge from there.
+
+The IBM360 only had a valid bit. That was the start of hardware components being added.
+
+MEMORY MANAGEMENT IS OVER.
+
+TEST NEXT TUESDAY.
+
+\section*{Memory Management Test Review}
+
+{\bf Q: What is the bit breakdown for the page table.}
+
+(Drawing virtual address space)
+
+The rightmost 12 bits are called the offset.
+
+The leftmost group is the page number.
+
+The leftmost section of the address space is broken into two.
+
+The map base register is the new base pointer.
+
+a 32 bit address space (virtual) is broken into three sections.
+\begin{itemize}
+\item First ten bits. are the first key for the TLB.
+\item Second ten bits. are the second nesting for the TLB.
+\item The last twelve bits is the offset. Used for specific byte address.
+\end{itemize}
+
+{\bf Q: Does the TLB have to be cleared under a context switch.}
+
+Virtual to real is a one to many relationship.
+
+So it must be cleared for a context switch.
+
+Each row is completed by a page-fault.
+
+Pages don't come in unless you ask for them.
+
+{\bf Q: What are the primary differences between local and global page replacement?}
+
+With local, your resident set can only grow and shrink when your running.
+
+Global can manipulate anyones resident set.
+
+The problem with local is that a process with many pages cannot be taken from if it's not running.
+
+{\bf Q: Can you go over page locking}
+
+A down side of global is that a page can be swapped out when it should not be.
+
+When a page is blocked for I/O...A page should not be swapped out.
+
+(The other reason is a realtime process.)
+
+(The other other reason is for certain kernel processes.)
+
+This is page locking.
+
+{\bf }
+
+
+
+\subsection*{Volunteered Information}
+
+Most of the questions will be on the on the simple (new/complex) version of the paging table.
+
+When there is a page fault, the {\it eip} will not move until a new page is brought in. 
+This way the instruction can be re-executed.
+An instruction can page fault up to a max of 5 times before it is executed.
+
+\subsection{Project}
+
+Create a reference string.
+
+A set of page numbers in the order they are accessed.
+
+pages between 0-99.
+Then do 10,000 thousand iterations.
+
+A reference string is gonna be a file.
+
+It will have a series of numbers.
+
+{\bf Rules}
+\begin{itemize}
+\item Never have the same number appear twice in a row.
+\item The pattern must be well behaved.
+\end{itemize}
+
+A loop could indicate a system call.
+
+To do a random page
+
+$$
+NP = RAND*100
+$$
+
+\begin{verbatim}
+if (RAND() < .9) {
+  NP = (RAND() < .5) ? p+1 : p-1;
+}
+\end{verbatim}
+
+Write a two page report.
+
+He wants to hear about is failures and successes.
+
+He wants to hear the eureka moment.
+
+2 pages is the limit.
+
+He will give one extra page for graphics.
+
+12 pt type.
+
+single spaced.
+
+Due the last day of class.
+
+First thing to think about is the reference string pattern.
+
+We are simulating page faults.
+
+2 times LRU should not beat OPTIMAL.
+
+Balladys anomaly.
+
+
+
+
+
+\end{document}
+
